@@ -1,10 +1,9 @@
 module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   input clk;
-  input GAIN;
-  input NC;
-  input ACTIVE;
-
   output AIN;
+  output GAIN;
+  output NC;
+  output ACTIVE;
 
   reg [15:0] counter;
   
@@ -17,4 +16,7 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
     counter <= counter + 1;
 
   assign AIN = counter[15];
+  assign GAIN = 0;
+  assign NC = 0;
+  assign ACTIVE = 1;
 endmodule
