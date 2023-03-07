@@ -15,8 +15,8 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   always @ (posedge clk)
     counter <= counter + 1;
 
-  assign AIN = counter[15];
-  assign GAIN = 0;
+  assign AIN = counter[15] & (counter[5:0] == 0); // play at a quieter volume
+  assign GAIN = 1; // high GAIN plays sound at a lower db
   assign NC = 0;
   assign ACTIVE = 1;
 endmodule
