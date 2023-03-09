@@ -53,24 +53,26 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   divide_by12 divby12(.numer(fullnote[5:0], .quotient(octave), .remain(note)));
 
   reg [8:0] clkdivider;
+
+  // C, D, E, F, G, A, B
   always @ (note)
     case (note)
-      0: clkdivider = 512-1; // A
-      1: clkdivider = 483-1; // A#/Bb
-      2: clkdivider = 456-1; // B
-      3: clkdivider = 431-1; // C
-      4: clkdivider = 406-1; // C#/Db
-      5: clkdivider = 384-1; // D
-      6: clkdivider = 362-1; // D#/Eb
-      7: clkdivider = 342-1; // E
-      8: clkdivider = 323-1; // F
-      9: clkdivider = 304-1; // F#/Gb
-      10: clkdivider = 287-1; // G
-      11: clkdivider = 271-1; // G#/Ab
-      12: clkdivider = 0; // should never happen
-      13: clkdivider = 0; // should never happen
-      14: clkdivider = 0; // should never happen
-      15: clkdivider = 0; // should never happen
+    0: clkdivider = 32; // C1
+    1: clkdivider = 36; // D1
+    2: clkdivider = 41; // E1
+    3: clkdivider = 43; // F1
+    4: clkdivider = 48; // G1
+    5: clkdivider = 55; // A1
+    6: clkdivider = 61; // B1
+    7: clkdivider = 0;
+    8: clkdivider = 0;
+    9: clkdivider = 0;
+    10: clkdivider = 0;
+    11: clkdivider = 0;
+    12: clkdivider = 0;
+    13: clkdivider = 0;
+    14: clkdivider = 0;
+    15: clkdivider = 0;
     endcase
 
   reg [8:0] counter_note;
