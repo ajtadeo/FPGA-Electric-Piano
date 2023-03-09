@@ -57,23 +57,23 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
 
   // C, D, E, F, G, A, B
   always @ (note)
-    case (note)
-    0: clkdivider = clkspeed / 512 / 32; // C1
-    1: clkdivider = clkspeed / 512 / 36; // D1
-    2: clkdivider = clkspeed / 512 / 41; // E1
-    3: clkdivider = clkspeed / 512 / 43; // F1
-    4: clkdivider = clkspeed / 512 / 48; // G1
-    5: clkdivider = clkspeed / 512 / 55; // A1
-    6: clkdivider = clkspeed / 512 / 61; // B1
+    case (note[2:0])
+    0: clkdivider = clkspeed / 512 / 27; // A0
+    1: clkdivider = clkspeed / 512 / 31; // B0
+    2: clkdivider = clkspeed / 512 / 33; // C1
+    3: clkdivider = clkspeed / 512 / 37; // D1
+    4: clkdivider = clkspeed / 512 / 41; // E1
+    5: clkdivider = clkspeed / 512 / 44; // F1
+    6: clkdivider = clkspeed / 512 / 49; // G1
     7: clkdivider = 0;
-    8: clkdivider = 0;
-    9: clkdivider = 0;
-    10: clkdivider = 0;
-    11: clkdivider = 0;
-    12: clkdivider = 0;
-    13: clkdivider = 0;
-    14: clkdivider = 0;
-    15: clkdivider = 0;
+    // 8: clkdivider = 0;
+    // 9: clkdivider = 0;
+    // 10: clkdivider = 0;
+    // 11: clkdivider = 0;
+    // 12: clkdivider = 0;
+    // 13: clkdivider = 0;
+    // 14: clkdivider = 0;
+    // 15: clkdivider = 0;
     endcase
 
   reg [8:0] counter_note;
@@ -88,9 +88,19 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   always @ (posedge clk)
     if (counter_note == 0)
       begin 
-        if (counter_octave == 0)
-          counter_octave <= (octave == 0 ? 255 : (octave == 1 ? 127 : (octave == 2 ? 63 : (octave == 3 ? 31 : (octave == 4 ? 15 : 7)))));
-        else
+        if (counter_octave == 0) begin
+          case(counter_octave)
+          0: counter_octave <= 255;
+          1: counter_octave <= 127;
+          2: counter_octave <= 63;
+          3: counter_octave <= 31;
+          4: counter_octave <= 15;
+          5: counter_octave <= 7;
+          6: counter_octave <= 3;
+          7: counter_octave <= 1;
+          endcase
+          // counter_octave <= (octave == 0 ? 255 : (octave == 1 ? 127 : (octave == 2 ? 63 : (octave == 3 ? 31 : (octave == 4 ? 15 : 7)))));
+        end else
           counter_octave <= counter_octave-1;
       end
 
