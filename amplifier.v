@@ -50,7 +50,7 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
 
   wire[2:0] octave;
   wire [3:0] note;
-  divide_by12 divby12(.numer(fullnote[5:0], .quotient(octave), .remain(note)));
+  divide_by12 divby12(.numer(fullnote[5:0]), .quotient(octave), .remain(note));
 
   reg [8:0] clkdivider;
   parameter clkspeed = 100000000;
