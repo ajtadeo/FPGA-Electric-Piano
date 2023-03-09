@@ -53,17 +53,18 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   divide_by12 divby12(.numer(fullnote[5:0], .quotient(octave), .remain(note)));
 
   reg [8:0] clkdivider;
+  parameter clkspeed = 100000000;
 
   // C, D, E, F, G, A, B
   always @ (note)
     case (note)
-    0: clkdivider = 32; // C1
-    1: clkdivider = 36; // D1
-    2: clkdivider = 41; // E1
-    3: clkdivider = 43; // F1
-    4: clkdivider = 48; // G1
-    5: clkdivider = 55; // A1
-    6: clkdivider = 61; // B1
+    0: clkdivider = clkspeed / 512 / 32; // C1
+    1: clkdivider = clkspeed / 512 / 36; // D1
+    2: clkdivider = clkspeed / 512 / 41; // E1
+    3: clkdivider = clkspeed / 512 / 43; // F1
+    4: clkdivider = clkspeed / 512 / 48; // G1
+    5: clkdivider = clkspeed / 512 / 55; // A1
+    6: clkdivider = clkspeed / 512 / 61; // B1
     7: clkdivider = 0;
     8: clkdivider = 0;
     9: clkdivider = 0;
