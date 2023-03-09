@@ -43,16 +43,46 @@ module piano
     .SW_G(SW_G),
     .SW_A(SW_A),
     .SW_B(SW_B),
-    .BTN_R(BTN_R), .BTN_R(BTN_L),
-    .BTN_R(BTN_U), .BTN_R(BTN_D),
+    .BTN_R(BTN_R), .BTN_L(BTN_L),
+    .BTN_U(BTN_U), .BTN_D(BTN_D),
     .note_switches(note_switches),
     .rst(rst), .toggle_pb(toggle_pb),
     .inc_octave(inc_octave), .dec_octave(dec_octave)
   );
 
+  wire add;
+  reg [5:0] next_note;
+  wire pb_note;
+
+  note_buffer recording(.clk(clk), .rst(rst),
+    .add(add), .next_note(next_note), .pb_note(pb_note)
+  );
+
+  reg pb_mode;
+  reg pb_next_mode;
+
+  always @ (posedge toggle_pb) begin
+    pb_next_mode <= !pb_mode;
+  end
+
   always @ (posedge ^note_switches or posedge ~^note_switches) begin
     if (!pb_mode) begin
-      // DO STUFF
+      // PLAY NOTE & SAVE NOTE
+    end
+  end
+
+  reg [7:0] pb_state;
+  always @ (posedge clk) begin
+    if (rst) begin
+      pb_mode <= 1'b0;
+      // RESET OCTAVE
+    end else begin
+      pb_mode <= pb_next_mode;
+      if (pb_mode) begin
+        // DO STUFF
+      end else begin
+        // DO STUFF
+      end
     end
   end
 endmodule
