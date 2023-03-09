@@ -2,7 +2,7 @@ module debounced
   (
     clk,
     SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B,
-    BTN_R, BTN_L, BTN_U, BTN_D,
+    RST, PLAYBACK, UP, DOWN,
     note_switches, rst, toggle_pb, inc_octave, dec_octave
   );
 
@@ -16,10 +16,10 @@ module debounced
   input SW_A;
   input SW_B;
 
-  input BTN_R;
-  input BTN_L;
-  input BTN_U;
-  input BTN_D;
+  input RST;
+  input PLAYBACK;
+  input UP;
+  input DOWN;
 
   output reg [6:0] note_switches;
 
@@ -33,9 +33,9 @@ module debounced
       SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B
     };
     
-    rst <= BTN_R;
-    toggle_pb <= BTN_L;
-    inc_octave <= BTN_U;
-    dec_octave <= BTN_D;
+    rst <= RST;
+    toggle_pb <= PLAYBACK;
+    inc_octave <= UP;
+    dec_octave <= DOWN;
   end
 endmodule

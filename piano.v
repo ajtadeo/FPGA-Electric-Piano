@@ -2,7 +2,7 @@ module piano
   (
     clk,
     SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B,
-    BTN_R, BTN_L, BTN_U, BTN_D
+    RST, PLAYBACK, UP, DOWN
   );
 
   input clk;
@@ -15,10 +15,10 @@ module piano
   input SW_A;
   input SW_B;
 
-  input BTN_R;
-  input BTN_L;
-  input BTN_U;
-  input BTN_D;
+  input RST;
+  input PLAYBACK;
+  input UP;
+  input DOWN;
 
   wire clk_1;
   wire clk_2;
@@ -43,8 +43,8 @@ module piano
     .SW_G(SW_G),
     .SW_A(SW_A),
     .SW_B(SW_B),
-    .BTN_R(BTN_R), .BTN_L(BTN_L),
-    .BTN_U(BTN_U), .BTN_D(BTN_D),
+    .RST(RST), .PLAYBACK(PLAYBACK),
+    .UP(UP), .DOWN(DOWN),
     .note_switches(note_switches),
     .rst(rst), .toggle_pb(toggle_pb),
     .inc_octave(inc_octave), .dec_octave(dec_octave)
