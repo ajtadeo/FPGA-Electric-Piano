@@ -51,11 +51,12 @@ module piano
   );
 
   reg [2:0] octave;
-  reg [2:0] octave_prev;
-  reg [2:0] note_prev;
+  reg [2:0] octave_played;
+  reg [2:0] note_played;
 
   reg [5:0] buffer [255:0];
-  reg [7:0] idx;
+  reg [7:0] idx_wr;
+  reg [7:0] idx_pb;
 
   reg [6:0] note_switches_prev;
   reg toggle_pb_prev;
@@ -69,41 +70,53 @@ module piano
       for (i = 0; i < 256; i = i + 1) begin
         buffer[i] <= 6'b0;
       end
-      idx <= 8'b0;
+      idx_wr <= 8'b0;
+      idx_pb <= 8'b0;
 
-      // Reset currently selected octave, last note and octave
-      octave <= 3'd4;
-      octave_prev <= 3'd0;
-      note_prev <= 3'd0;
+      // Reset currently selected octave, last octave and note
+      octave_sel <= 3'd4;
+      octave_played <= 3'd0;
+      note_played <= 3'd0;
 
       // Reset to recording mode
       pb_mode <= 1'b0;
     end else begin
       // Update currently selected octave
-      if (octave < 3'd7 && inc_octave && !inc_octave_prev) begin
-        octave = octave + 1;
+      if (octave_sel < 3'd7 && inc_octave && !inc_octave_prev) begin
+        octave_sel = octave_sel + 1;
       end
-      if (octave > 3'd1 && dec_octave && !dec_octave_prev) begin
-        octave = octave - 1;
+      if (octave_sel > 3'd1 && dec_octave && !dec_octave_prev) begin
+        octave_sel = octave_sel - 1;
       end
 
       // Toggle mode
       if (toggle_pb && !toggle_pb_prev) begin
+        idx_pb <= 8'b0;  // Reset playback index before playback
         pb_mode = !pb_mode;
-        // TODO: DO CLEANUP IF NECESSARY
       end
 
       if (pb_mode) begin
-        // IF IN PLAYBACK MODE
-        // TODO: DO STUFF
-        // TODO: RESET pb_mode to 0 WHEN DONE PLAYING
+        // TODO: Play back recording here or put in other block
       end else if (note_switches != note_switches_prev) begin
-        // Switches have changed
-        // TODO: Play note
-        // TODO: Save note
-      end else begin
-        // Switches have not changed, not in pb_mode
-        // TODO: Maybe do stuff here
+        // Switch state has changed
+        case (note_switches)
+          7'b1000000: note_played = 3'd1;
+          7'b0100000: note_played = 3'd2;
+          7'b0010000: note_played = 3'd3;
+          7'b0001000: note_played = 3'd4;
+          7'b0000100: note_played = 3'd5;
+          7'b0000010: note_played = 3'd6;
+          7'b0000001: note_played = 3'd7;
+          default: note_played = 3'd0;
+        endcase
+
+        if (|note_played) begin
+          // Write note to buffer
+          octave_played = octave_sel;
+          buffer[idx_wr] = {octave_played, note_played};
+          idx_wr <= idx_wr + 1;
+          // TODO: Play note
+        end
       end
     end
 

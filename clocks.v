@@ -1,6 +1,4 @@
-module clocks
-  (clk_100M, clk_1, clk_2, clk_4, clk_256);
-
+module clocks(clk_100M, clk_1, clk_2, clk_4, clk_256);
   input clk_100M;
 
   output reg clk_1;
