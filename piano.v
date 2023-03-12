@@ -55,8 +55,9 @@ module piano
   reg [2:0] note_played;
 
   reg [5:0] buffer [255:0];
-  reg [7:0] idx_wr;
-  reg [7:0] idx_pb;
+  reg [7:0] idx_wr;  // Write index
+  reg [7:0] idx_pb;  // Playback index
+  reg [31:0] clk_dv_pb;
 
   reg [6:0] note_switches_prev;
   reg toggle_pb_prev;
@@ -72,6 +73,7 @@ module piano
       end
       idx_wr <= 8'b0;
       idx_pb <= 8'b0;
+      clk_dv_pb <= 32'b1;
 
       // Reset currently selected octave, last octave and note
       octave_sel <= 3'd4;
@@ -91,12 +93,24 @@ module piano
 
       // Toggle mode
       if (toggle_pb && !toggle_pb_prev) begin
-        idx_pb <= 8'b0;  // Reset playback index before playback
+        idx_pb <= 8'b0;
+        clk_dv_pb <= 32'b1;
         pb_mode = !pb_mode;
       end
 
       if (pb_mode) begin
-        // TODO: Play back recording here or put in other block
+        // TODO: Play back recording
+        if (clk_dv_pb >= 32'd25000000) begin
+          idx_pb = idx_pb + 1;
+          if (idx_pb == idx_wr) begin
+            // End of recording reached
+            pb_mode <= 1'b0;
+          end
+
+          clk_dv_pb <= 1;
+        end else begin
+          clk_dv_pb <= clk_dv_pb + 1;
+        end
       end else if (note_switches != note_switches_prev) begin
         // Switch state has changed
         case (note_switches)
