@@ -8,15 +8,15 @@ module amplifier(clk, octave, note, AIN, GAIN, NC, ACTIVE);
   output NC;
   output ACTIVE;
 
-  // reg [27:0] tone;
+  reg [31:0] counter;
   
   // // used for simulation purposes
   // initial begin
 	//   tone = 0;
   // end
   
-  // always @ (posedge clk)
-  //   tone <= tone + 1;
+  always @ (posedge clk)
+    counter <= counter + 1;
 
   reg [8:0] clkdivider;
   parameter clkspeed = 100000000;
@@ -73,7 +73,7 @@ module amplifier(clk, octave, note, AIN, GAIN, NC, ACTIVE);
     if (counter_note == 0 && counter_octave == 0) 
       speaker <= ~speaker;
 
-  assign AIN = speaker & (tone[5:0] == 0); // play at a quieter volume
+  assign AIN = speaker & (counter[5:0] == 0); // play at a quieter volume
   assign GAIN = 1; // high GAIN plays sound at a lower db
   assign NC = 0;
   assign ACTIVE = 1;
