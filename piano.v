@@ -26,7 +26,7 @@ module piano
   wire clk_256;
 
   clocks clks(.clk_100M(clk),
-    .clk_1(clk_1), .clk_2(clk_2), .clk_4(clk_4), .clk_256(clk_256)
+    .clk_256(clk_256)
   );
 
   wire rst;
@@ -50,7 +50,7 @@ module piano
     .inc_octave(inc_octave), .dec_octave(dec_octave)
   );
 
-  reg [2:0] octave;
+  reg [2:0] octave_sel;
   reg [2:0] octave_played;
   reg [2:0] note_played;
 
@@ -64,6 +64,8 @@ module piano
   reg inc_octave_prev;
   reg dec_octave_prev;
 
+  reg pb_mode;
+
   integer i;
   always @ (posedge clk) begin
     if (rst) begin
@@ -76,19 +78,19 @@ module piano
       clk_dv_pb <= 32'b1;
 
       // Reset currently selected octave, last octave and note
-      octave_sel <= 3'd4;
-      octave_played <= 3'd0;
-      note_played <= 3'd0;
+      octave_sel = 3'd4;
+      octave_played = 3'd0;
+      note_played = 3'd0;
 
       // Reset to recording mode
-      pb_mode <= 1'b0;
+      pb_mode = 1'b0;
     end else begin
       // Update currently selected octave
       if (octave_sel < 3'd7 && inc_octave && !inc_octave_prev) begin
-        octave_sel = octave_sel + 1;
+        octave_sel = octave_sel + 3'b1;
       end
       if (octave_sel > 3'd1 && dec_octave && !dec_octave_prev) begin
-        octave_sel = octave_sel - 1;
+        octave_sel = octave_sel - 3'b1;
       end
 
       // Toggle mode
@@ -101,11 +103,12 @@ module piano
       if (pb_mode) begin
         // TODO: Play back recording
         if (clk_dv_pb >= 32'd25000000) begin
-          idx_pb = idx_pb + 1;
-          if (idx_pb == idx_wr) begin
+          //idx_pb = idx_pb + 1;
+          if (idx_pb + 1 == idx_wr) begin
             // End of recording reached
-            pb_mode <= 1'b0;
+            pb_mode = 1'b0;
           end
+			 idx_pb <= idx_pb + 8'b1;
 
           clk_dv_pb <= 1;
         end else begin
@@ -128,7 +131,7 @@ module piano
           // Write note to buffer
           octave_played = octave_sel;
           buffer[idx_wr] = {octave_played, note_played};
-          idx_wr <= idx_wr + 1;
+          idx_wr <= idx_wr + 8'b1;
           // TODO: Play note
         end
       end
