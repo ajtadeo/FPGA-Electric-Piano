@@ -3,7 +3,8 @@ module piano
     clk,
     SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B,
     RST, PLAYBACK, UP, DOWN,
-    AIN, GAIN, NC, ACTIVE
+    AIN, GAIN, NC, ACTIVE,
+    ANODE, CATHODE
   );
 
   input clk;
@@ -70,11 +71,9 @@ module piano
   reg dec_octave_prev;
 
   reg pb_mode;
-  
-  // Amplifier module
-  amplifier amp(.clk_100M(clk), .octave(octave_played), .note(note_played),
-    .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE)
-  );
+
+  reg [2:0] octave_prev;
+  reg [2:0] note_prev;
 
   integer i;
   always @ (posedge clk_1M) begin
@@ -92,6 +91,8 @@ module piano
       octave_sel = 3'd4;
       octave_played = 3'd0;
       note_played = 3'd0;
+      octave_prev = 3'd0;
+      note_prev = 3'd0;
 
       // Reset to recording mode
       pb_mode = 1'b0;
@@ -142,8 +143,12 @@ module piano
         if (|note_played) begin
           // Write note to buffer
           octave_played = octave_sel;
+
           buffer[idx_wr] = {octave_played, note_played};
           idx_wr <= idx_wr + 8'b1;
+
+          octave_prev = octave_played;
+          note_prev = note_played;
 
           clk_dv_rec <= 32'd1;
         end
@@ -161,5 +166,44 @@ module piano
     toggle_pb_prev <= toggle_pb;
     inc_octave_prev <= inc_octave;
     dec_octave_prev <= dec_octave;
+  end
+  
+  // Amplifier module
+  amplifier amp(.clk_100M(clk), .octave(octave_played), .note(note_played),
+    .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE)
+  );
+
+  // Display modules
+
+  wire [7:0] display_note_prev;
+  wire [7:0] display_octave_prev;
+  wire [7:0] display_octave_curr;
+
+  note_display d_note_p(.clk(clk), .note(note_prev),
+    .display(display_note_prev)
+  );
+  octave_display d_octave_p(.clk(clk), .octave(octave_prev),
+    .display(display_octave_prev)
+  );
+  octave_display d_octave_c(.clk(clk), .octave(octave_sel),
+    .display(display_octave_curr)
+  );
+
+  reg [1:0] display_select;
+  always @ (posedge clk_250) begin
+    if (select == 0) begin
+      ANODE <= 4'b0111;
+      CATHODE <= display_note_prev;
+    end else if (select == 1) begin
+      ANODE <= 4'b1011;
+      CATHODE <= display_octave_prev;
+    end else if (select == 2) begin
+      ANODE <= 4'b1101;
+      CATHODE <= 8'b11111111;
+    end else if (select == 3) begin
+      ANODE <= 4'b1110;
+      CATHODE <= display_octave_curr;
+    end
+    select <= select + 1;
   end
 endmodule
