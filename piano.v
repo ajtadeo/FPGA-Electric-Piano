@@ -26,10 +26,11 @@ module piano
   output NC;
   output ACTIVE;
 
-  wire clk_256;
+  wire clk_250;
+  wire clk_1M;
 
   clocks clks(.clk_100M(clk),
-    .clk_256(clk_256)
+    .clk_250(clk_250), .clk_1M(clk_1M)
   );
 
   wire rst;
@@ -38,7 +39,7 @@ module piano
   wire inc_octave;
   wire dec_octave;
 
-  debounced inputs(.clk(clk_256),
+  debounced inputs(.clk(clk_250),
     .SW_C(SW_C),
     .SW_D(SW_D),
     .SW_E(SW_E),
@@ -69,12 +70,13 @@ module piano
 
   reg pb_mode;
   
-  // amplifier module
-  amplifier amp(.clk(clk), .octave(octave_played), .note(note_played), .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE));
-  //amplifier amp(.clk(clk), .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE));
+  // Amplifier module
+  amplifier amp(.clk(clk), .octave(octave_played), .note(note_played),
+    .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE)
+  );
 
   integer i;
-  always @ (posedge clk) begin
+  always @ (posedge clk_1M) begin
     if (rst) begin
       // Clear recording
       for (i = 0; i < 256; i = i + 1) begin
@@ -109,7 +111,7 @@ module piano
 
       if (pb_mode) begin
         // TODO: Play back recording
-        if (clk_dv_pb >= 32'd25000000) begin
+        if (clk_dv_pb >= 32'd250000) begin
           //idx_pb = idx_pb + 1;
           if (idx_pb + 1 == idx_wr) begin
             // End of recording reached
