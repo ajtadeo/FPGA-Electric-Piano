@@ -71,6 +71,7 @@ module piano
   
   // amplifier module
   amplifier amp(.clk(clk), .octave(octave_played), .note(note_played), .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE));
+  //amplifier amp(.clk(clk), .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE));
 
   integer i;
   always @ (posedge clk) begin
