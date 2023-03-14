@@ -57,6 +57,7 @@ module piano
   reg [2:0] octave_sel;
   reg [2:0] octave_played;
   reg [2:0] note_played;
+  reg [31:0] clk_dv_rec;
 
   reg [5:0] buffer [255:0];
   reg [7:0] idx_wr;  // Write index
@@ -84,7 +85,8 @@ module piano
       end
       idx_wr <= 8'b0;
       idx_pb <= 8'b0;
-      clk_dv_pb <= 32'b1;
+      clk_dv_rec <= 32'd1000000;
+      clk_dv_pb <= 32'd1;
 
       // Reset currently selected octave, last octave and note
       octave_sel = 3'd4;
@@ -96,29 +98,30 @@ module piano
     end else begin
       // Update currently selected octave
       if (octave_sel < 3'd7 && inc_octave && !inc_octave_prev) begin
-        octave_sel = octave_sel + 3'b1;
+        octave_sel = octave_sel + 3'd1;
       end
       if (octave_sel > 3'd1 && dec_octave && !dec_octave_prev) begin
-        octave_sel = octave_sel - 3'b1;
+        octave_sel = octave_sel - 3'd1;
       end
 
       // Toggle mode
       if (toggle_pb && !toggle_pb_prev) begin
         idx_pb <= 8'b0;
-        clk_dv_pb <= 32'b1;
+        clk_dv_pb <= 32'd1;
         pb_mode = !pb_mode;
       end
 
       if (pb_mode) begin
-        // TODO: Play back recording
         if (clk_dv_pb >= 32'd250000) begin
-          //idx_pb = idx_pb + 1;
-          if (idx_pb + 1 == idx_wr) begin
+          if (idx_pb + 1 >= idx_wr) begin
             // End of recording reached
             pb_mode = 1'b0;
           end
-          idx_pb <= idx_pb + 8'b1;
 
+          octave_played = buffer[idx_pb][5:3];
+          note_played = buffer[idx_pb][2:0];
+
+          idx_pb <= idx_pb + 8'b1;
           clk_dv_pb <= 1;
         end else begin
           clk_dv_pb <= clk_dv_pb + 1;
@@ -141,7 +144,15 @@ module piano
           octave_played = octave_sel;
           buffer[idx_wr] = {octave_played, note_played};
           idx_wr <= idx_wr + 8'b1;
-          // TODO: Play note
+
+          clk_dv_rec <= 32'd1;
+        end
+      end else begin
+        if (clk_dv_rec >= 32'd1000000) begin
+          octave_played = 3'd0;
+          note_played = 3'd0;
+        end else begin
+          clk_dv_rec <= clk_dv_rec + 1;
         end
       end
     end
