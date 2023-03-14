@@ -2,7 +2,8 @@ module piano
   (
     clk,
     SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B,
-    RST, PLAYBACK, UP, DOWN
+    RST, PLAYBACK, UP, DOWN,
+	 AIN, GAIN, NC, ACTIVE
   );
 
   input clk;
@@ -19,10 +20,12 @@ module piano
   input PLAYBACK;
   input UP;
   input DOWN;
+  
+  output AIN;
+  output GAIN;
+  output NC;
+  output ACTIVE;
 
-  wire clk_1;
-  wire clk_2;
-  wire clk_4;
   wire clk_256;
 
   clocks clks(.clk_100M(clk),
@@ -65,6 +68,9 @@ module piano
   reg dec_octave_prev;
 
   reg pb_mode;
+  
+  // amplifier module
+  amplifier amp(.clk(clk), .octave(octave_played), .note(note_played), .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE));
 
   integer i;
   always @ (posedge clk) begin
@@ -108,7 +114,7 @@ module piano
             // End of recording reached
             pb_mode = 1'b0;
           end
-			 idx_pb <= idx_pb + 8'b1;
+          idx_pb <= idx_pb + 8'b1;
 
           clk_dv_pb <= 1;
         end else begin
