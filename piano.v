@@ -3,7 +3,7 @@ module piano
     clk,
     SW_C, SW_D, SW_E, SW_F, SW_G, SW_A, SW_B,
     RST, PLAYBACK, UP, DOWN,
-	 AIN, GAIN, NC, ACTIVE
+    AIN, GAIN, NC, ACTIVE
   );
 
   input clk;

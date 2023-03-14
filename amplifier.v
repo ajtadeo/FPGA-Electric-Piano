@@ -95,7 +95,7 @@ module amplifier(clk, AIN, GAIN, NC, ACTIVE);
   
   // used for simulation purposes
   initial begin
-	  tone = 0;
+    tone = 0;
   end
   
   always @ (posedge clk)
