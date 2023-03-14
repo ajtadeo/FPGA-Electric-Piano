@@ -71,7 +71,7 @@ module piano
   reg pb_mode;
   
   // Amplifier module
-  amplifier amp(.clk(clk), .octave(octave_played), .note(note_played),
+  amplifier amp(.clk_100M(clk), .octave(octave_played), .note(note_played),
     .AIN(AIN), .GAIN(GAIN), .NC(NC), .ACTIVE(ACTIVE)
   );
 
