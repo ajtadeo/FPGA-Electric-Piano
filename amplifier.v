@@ -24,7 +24,7 @@ module amplifier(clk_100M, octave, note, AIN, GAIN, NC, ACTIVE);
       6: clk_dv_max_base = 32'd909091; // A1
       7: clk_dv_max_base = 32'd809908; // B1
     endcase
-    clk_dv_max = clk_dv_max_base >> octave;
+    clk_dv_max <= clk_dv_max_base >> octave;
 
     if (counter >= clk_dv_max) begin
       speaker <= ~speaker;
