@@ -13,7 +13,7 @@ module clocks(clk_100M, clk_250, clk_1M);
     end else begin
       clk_dv_250 = clk_dv_250 + 1;
     end
-    clk_250 = (clk_dv_250 == 32'd1);
+    clk_250 = (clk_dv_250 == 1);
   end
 
   always @ (posedge clk_100M) begin
@@ -22,6 +22,6 @@ module clocks(clk_100M, clk_250, clk_1M);
     end else begin
       clk_dv_1M = clk_dv_1M + 1;
     end
-    clk_1M = (clk_dv_1M == 32'd1);
+    clk_1M = (clk_dv_1M == 1);
   end
 endmodule
