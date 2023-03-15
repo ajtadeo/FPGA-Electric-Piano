@@ -27,6 +27,9 @@ module piano
   output NC;
   output ACTIVE;
 
+  output reg [3:0] ANODE;
+  output reg [7:0] CATHODE;
+
   wire clk_250;
   wire clk_1M;
 
@@ -80,7 +83,7 @@ module piano
     if (rst) begin
       // Clear recording
       for (i = 0; i < 256; i = i + 1) begin
-        buffer[i] <= 6'b0;
+        buffer[i] = 6'b0;
       end
       idx_wr <= 8'b0;
       idx_pb <= 8'b0;
@@ -191,19 +194,19 @@ module piano
 
   reg [1:0] display_select;
   always @ (posedge clk_250) begin
-    if (select == 0) begin
+    if (display_select == 0) begin
       ANODE <= 4'b0111;
       CATHODE <= display_note_prev;
-    end else if (select == 1) begin
+    end else if (display_select == 1) begin
       ANODE <= 4'b1011;
       CATHODE <= display_octave_prev;
-    end else if (select == 2) begin
+    end else if (display_select == 2) begin
       ANODE <= 4'b1101;
       CATHODE <= 8'b11111111;
-    end else if (select == 3) begin
+    end else if (display_select == 3) begin
       ANODE <= 4'b1110;
       CATHODE <= display_octave_curr;
     end
-    select <= select + 1;
+    display_select <= (display_select + 1) % 4;
   end
 endmodule
