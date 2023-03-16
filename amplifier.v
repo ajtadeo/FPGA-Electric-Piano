@@ -34,7 +34,7 @@ module amplifier(clk_100M, octave, note, AIN, GAIN, NC, ACTIVE);
     end
   end
 
-  assign AIN = speaker;
+  assign AIN = speaker & (counter[5:0] == 0);
   assign GAIN = 1; // high GAIN plays sound at a lower db
   assign NC = 0;
   assign ACTIVE = 1;
