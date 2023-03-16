@@ -16,13 +16,13 @@ module amplifier(clk_100M, octave, note, AIN, GAIN, NC, ACTIVE);
   always @ (posedge clk_100M) begin
     case (note)
       0: clk_dv_max_base = 32'd4294967295; // invalid
-      1: clk_dv_max_base = 32'd1528902; // C1
-      2: clk_dv_max_base = 32'd1362097; // D1
-      3: clk_dv_max_base = 32'd1213491; // E1
-      4: clk_dv_max_base = 32'd1145383; // F1
-      5: clk_dv_max_base = 32'd1020420; // G1
-      6: clk_dv_max_base = 32'd909091; // A1
-      7: clk_dv_max_base = 32'd809908; // B1
+      1: clk_dv_max_base = 32'd3057805; // C1
+      2: clk_dv_max_base = 32'd2724194; // D1
+      3: clk_dv_max_base = 32'd2426982; // E1
+      4: clk_dv_max_base = 32'd2290765; // F1
+      5: clk_dv_max_base = 32'd2040840; // G1
+      6: clk_dv_max_base = 32'd1818182; // A1
+      7: clk_dv_max_base = 32'd1619816; // B1
     endcase
     clk_dv_max <= clk_dv_max_base >> octave;
 

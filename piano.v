@@ -83,7 +83,7 @@ module piano
     if (rst) begin
       // Clear recording
       for (i = 0; i < 256; i = i + 1) begin
-        buffer[i] <= 6'b0;
+        buffer[i] = 6'b0;
       end
       idx_wr <= 8'b0;
       idx_pb <= 8'b0;
@@ -118,7 +118,7 @@ module piano
 
       if (pb_mode) begin
         if (clk_dv_pb >= 32'd250000) begin
-          if (idx_pb + 1 >= idx_wr) begin
+          if (idx_pb >= idx_wr) begin
             // End of recording reached
             pb_mode = 1'b0;
           end
@@ -148,7 +148,7 @@ module piano
           // Write note to buffer
           octave_played = octave_sel;
 
-          buffer[idx_wr] <= {octave_played, note_played};
+          buffer[idx_wr] = {octave_played, note_played};
           idx_wr <= idx_wr + 8'b1;
 
           octave_prev <= octave_played;
