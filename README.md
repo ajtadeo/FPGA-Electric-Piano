@@ -19,3 +19,6 @@ The right button will clear the recording in either mode. The mode will be reset
 * Reset Functionality (5%) - If the right button is pressed at any time: The recording should be cleared. The mode should be reset to “recording mode”. The currently selected octave should be reset to 4 (the middle octave).
 * Last Note Indicator (5%) - The display should indicate the last note and octave played using two digits.
 * Current Octave Indicator (5%) - The display should indicate the currently selected octave using one digit.
+
+## Playback Demonstration
+https://user-images.githubusercontent.com/92917168/225808838-878482e8-f4f8-4152-afa2-d2d24740838a.mov
