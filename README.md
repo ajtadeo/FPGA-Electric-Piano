@@ -1,4 +1,4 @@
-# CSM152A-Lab4: Electronic Piano
+# FPGA Electronic Piano
 ## Overview
 For our project, we will create an electric piano on the FPGA board. 7 switches will be used to represent 7 notes in one musical octave. A user can use the up and down buttons to cycle between all seven octaves on the piano. In addition to playing the piano as normal, notes will be recorded in “recording mode”. The user can play them back in “playback mode” by pressing the appropriate button. A reset button will clear the recording and reset the mode and selected octave.
 
